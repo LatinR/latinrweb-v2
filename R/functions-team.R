@@ -38,8 +38,8 @@ get_info_committe <- function(){
 
 get_info_team <- function(){
   # Run code below when we need to update
-  # url_sheets_team <- "https://docs.google.com/spreadsheets/d/1gjdblLof74LgIOzxbm3WH8l7wI5IoJftdLF0os9B5EI/edit?gid=773649310#gid=773649310"
-
+  # url_sheets_team <- "https://docs.google.com/spreadsheets/d/1gjdblLof74LgIOzxbm3WH8l7wI5IoJftdLF0os9B5EI/edit?usp=sharing"
+  # 
   # sheets_team_raw <-
   #   googlesheets4::read_sheet(url_sheets_team)
   # 
@@ -55,19 +55,27 @@ get_info_team <- function(){
       titles = 3,
       site = sitio_web,
       github = git_hub,
-      linkedin = linked_in
+      linkedin = linked_in,
     ) |> 
     dplyr::arrange(name_complete) |> 
-    dplyr::select(-marca_temporal, -redes_sociales) |>
+    dplyr::select(-marca_temporal) |>
     dplyr::mutate(
       linkedin = fix_social_url(linkedin, "https://linkedin.com/in/"),
       github = fix_social_url(github, "https://github.com/"),
       twitter =  fix_social_url(twitter, "https://twitter.com/")
     ) |> 
     tidyr::drop_na(name_complete) |> 
+    dplyr::mutate(
+      category = dplyr::case_when(
+       name_complete %in% c("Natalia da Silva", "Riva Quiroga", "Yanina Bellini Saibene") ~ "chairs",
+        TRUE ~ "organizacion"
+      )
+    )
+  
+  sheets_team_icons <- sheets_team |> 
     generate_icons()
   
-  sheets_team
+  sheets_team_icons 
 }
 
 
@@ -87,38 +95,46 @@ generate_icons <- function(tab){
       site = stringr::str_trim(site),
       icon_github = dplyr::case_when(
         !is.na(github) ~ glue::glue(
-          '<a href="{github}" target="_blank"><i class="fab fa-github"></i></a>'
+          '<a href="{github}" target="_blank"><i class="fab fa-github"></i></a>  '
         ),
         TRUE ~ ""
       ) ,
       
       icon_twitter = dplyr::case_when(
         !is.na(twitter) ~ glue::glue(
-          '<a href="{twitter}" target="_blank"><i class="fab fa-twitter"></i></a>'
+          '<a href="{twitter}" target="_blank"><i class="fab fa-twitter"></i></a>  '
         ),
         TRUE ~ ""
       ) ,
       
       icon_linkedin = dplyr::case_when(
         !is.na(linkedin) ~ glue::glue(
-          '<a href="{linkedin}" target="_blank"><i class="fab fa-linkedin"></i></a>'
+          '<a href="{linkedin}" target="_blank"><i class="fab fa-linkedin"></i></a>  '
         ),
         TRUE ~ ""
       ) ,
       
       icon_mastodon = dplyr::case_when(
         !is.na(mastodon) ~ glue::glue(
-          '<a href="{mastodon}" target="_blank"><i class="fab fa-mastodon"></i></a>'
+          '<a href="{mastodon}" target="_blank"><i class="fab fa-mastodon"></i></a>  '
         ),
         TRUE ~ ""
       ) ,
       
       icon_site = dplyr::case_when(
         !is.na(site) ~ glue::glue(
-          '<a href="{site}" target="_blank"><i class="fas fa-home"></i></a>'
+          '<a href="{site}" target="_blank"><i class="fas fa-home"></i></a>  '
         ),
         TRUE ~ ""
       ) ,
-      icons = glue::glue("{icon_site} {icon_github} {icon_linkedin} {icon_mastodon} {icon_twitter}")
+      
+      icon_orcid = dplyr::case_when(
+        !is.na(orcid) ~ glue::glue(
+          '<a href="{orcid}" target="_blank"><i class="fab fa-orcid></i></a>  '
+        ),
+        TRUE ~ ""
+      ) ,
+        
+      icons = glue::glue("{icon_site}{icon_orcid}{icon_github}{icon_linkedin}{icon_mastodon}{icon_twitter}")
     )
 }

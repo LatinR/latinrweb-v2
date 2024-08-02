@@ -45,8 +45,8 @@ chairs_list <- chairs  |>
 organizers_list <- organizers |>
   dplyr::group_split(name_complete)
 
-committe_list <- get_info_committe() |> 
-  dplyr::group_split(name_complete)
+# committe_list <- get_info_committe() |> 
+#   dplyr::group_split(name_complete)
 ```
 
 ::: {.content-visible when-profile="en"}
@@ -114,15 +114,15 @@ bslib::layout_column_wrap(class = "cards-display",
 ### Comité Científico
 :::
 
-
+Comming soon.
 
 ```{r}
-bslib::layout_column_wrap(class = "cards-display",
-  width = 1,
-  gap = "0.5cm",
-  height = 100,
-  purrr::map(committe_list, .f = ~generate_card(.x, class_group = "card-header-comite"))
-)
+# bslib::layout_column_wrap(class = "cards-display",
+#   width = 1,
+#   gap = "0.5cm",
+#   height = 100,
+#   purrr::map(committe_list, .f = ~generate_card(.x, class_group = "card-header-comite"))
+# )
 ```
 
 
